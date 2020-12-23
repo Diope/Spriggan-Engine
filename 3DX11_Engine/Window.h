@@ -9,10 +9,20 @@ public:
 	Window();
 	// Initialize the window
 	bool init();
+	bool broadcast();
 
 	// Release the window
 	bool release();
+	bool isRunning();
+
+	// Events
+	virtual void onCreate()=0;
+	virtual void onUpdate()=0;
+	virtual void onDestroy();
+
 	~Window();
-	
+protected:
+	HWND m_hwnd;
+	bool m_is_running;
 };
 

@@ -13,6 +13,9 @@ public:
 	// Release loaded resources
 	bool release();
 	~GraphicsEngine();
+
+public:
+	SwapChain *createSwapChain();
 	
 public:
 	static GraphicsEngine *get();

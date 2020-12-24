@@ -1,5 +1,5 @@
 #include "GraphicsEngine.h"
-
+#include "SwapChain.h"
 
 
 GraphicsEngine::GraphicsEngine()
@@ -46,6 +46,10 @@ bool GraphicsEngine::init()
 
 bool GraphicsEngine::release()
 {
+	m_dxgi_device->Release();
+	m_dxgi_adapter->Release();
+	m_dxgi_factory->Release();
+
 	m_imm_context->Release();
 	m_d3d_device->Release();
 	return true;
@@ -56,7 +60,12 @@ GraphicsEngine::~GraphicsEngine()
 {
 }
 
-GraphicsEngine * GraphicsEngine::get()
+SwapChain *GraphicsEngine::createSwapChain()
+{
+	return new SwapChain();
+}
+
+GraphicsEngine *GraphicsEngine::get()
 {
 	static GraphicsEngine engine;
 	return &engine;

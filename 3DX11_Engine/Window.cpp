@@ -59,7 +59,7 @@ bool Window::init()
 		window = this;*/
 
 	// Creation of the window
-	m_hwnd = ::CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "MyWindowClass", "D3D11 Application",
+	m_hwnd = ::CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "MyWindowClass", "Spriggan Engine",
 		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768,
 		NULL, NULL, NULL, this);
 

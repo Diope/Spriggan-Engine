@@ -35,8 +35,8 @@ public:
 	void releaseCompiledShader();
 
 	// Default simple shaders
-	bool createShaders();
-	bool setShaders();
+	//bool createShaders();
+	//bool setShaders();
 	
 public:
 	static GraphicsEngine *get();

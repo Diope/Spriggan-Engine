@@ -3,6 +3,7 @@
 #include "DeviceContext.h"
 #include "VertexBuffer.h"
 #include "VertexShader.h"
+#include "PixelShader.h"
 
 #include <d3dcompiler.h>
 
@@ -101,6 +102,16 @@ VertexShader * GraphicsEngine::createVertexShader(const void * shader_byte_code,
 	return vs;
 }
 
+PixelShader * GraphicsEngine::createPixelShader(const void * shader_byte_code, size_t byte_code_size)
+{
+	PixelShader *ps = new PixelShader();
+
+	if (!ps->init(shader_byte_code, byte_code_size)) { ps->release(); return nullptr; }
+
+	return ps;
+
+}
+
 bool GraphicsEngine::compileVertexShader(const wchar_t *file_name, const char *entry_point_name, void** shader_byte_code, size_t *byte_code_size)
 {
 	ID3DBlob *error_blob = nullptr;
@@ -114,6 +125,11 @@ bool GraphicsEngine::compileVertexShader(const wchar_t *file_name, const char *e
 	*byte_code_size = m_blob->GetBufferSize();
 
 	return true;
+}
+
+bool GraphicsEngine::compilePixelShader(const wchar_t * file_name, const char * entry_point_name, void ** shader_byte_code, size_t * byte_code_size)
+{
+	return false;
 }
 
 void GraphicsEngine::releaseCompiledShader()

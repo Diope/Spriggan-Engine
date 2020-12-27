@@ -31,8 +31,13 @@ void AppWindow::onCreate()
 	{
 		// X - Y -Z
 		{-0.5f, -0.5f, 0.0f }, // POS1
-		{0.0f, 0.5f, 0.0f }, // POS2
-		{0.5f, -0.5f, 0.0f }, // POS3
+		{-0.5f, 0.5f, 0.0f }, // POS2
+		{0.5f, 0.5f, 0.0f }, // POS3
+
+		// X - Y -Z
+		{0.5f, 0.5f, 0.0f }, // POS1
+		{0.5f, -0.5f, 0.0f }, // POS2
+		{-0.5f, -0.5f, 0.0f }, // POS3
 	};
 
 	m_vertbuff = GraphicsEngine::get()->createVertexBuffer();

@@ -8,6 +8,7 @@ struct vec3d
 struct vertex
 {
 	vec3d position;
+	vec3d color;
 };
 
 AppWindow::AppWindow()
@@ -30,10 +31,10 @@ void AppWindow::onCreate()
 	vertex list[]=
 	{
 		// X - Y -Z
-		{-0.5f, -0.5f, 0.0f }, // POS1
-		{-0.5f, 0.5f, 0.0f }, // POS2
-		{0.5f, -0.5f, 0.0f }, // POS3
-		{0.5f, 0.5f, 0.0f }
+		{-0.5f, -0.5f, 0.0f,	1,0,0 }, // POS1
+		{-0.5f, 0.5f, 0.0f,		0,1,0 }, // POS2
+		{0.5f, -0.5f, 0.0f,		0,0,1 }, // POS3
+		{0.5f, 0.5f, 0.0f,		1,1,0 }
 	};
 
 	m_vertbuff = GraphicsEngine::get()->createVertexBuffer();

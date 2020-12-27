@@ -34,7 +34,6 @@ public:
 	// Default simple shaders
 	bool createShaders();
 	bool setShaders();
-	void getShaderBufferAndSize(void **bytecode, UINT*size);
 	
 public:
 	static GraphicsEngine *get();

@@ -76,6 +76,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Shader.fx" />
+    <FxCompile Include="VertexShader.hlsl">
+      <Filter>App</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

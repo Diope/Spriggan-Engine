@@ -32,12 +32,8 @@ void AppWindow::onCreate()
 		// X - Y -Z
 		{-0.5f, -0.5f, 0.0f }, // POS1
 		{-0.5f, 0.5f, 0.0f }, // POS2
-		{0.5f, 0.5f, 0.0f }, // POS3
-
-		// X - Y -Z
-		{0.5f, 0.5f, 0.0f }, // POS1
-		{0.5f, -0.5f, 0.0f }, // POS2
-		{-0.5f, -0.5f, 0.0f }, // POS3
+		{0.5f, -0.5f, 0.0f }, // POS3
+		{0.5f, 0.5f, 0.0f }
 	};
 
 	m_vertbuff = GraphicsEngine::get()->createVertexBuffer();
@@ -63,8 +59,12 @@ void AppWindow::onUpdate()
 	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 	GraphicsEngine::get()->setShaders();
 
+
+	// Set triangle vertices that will be drawn
 	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexBuffer(m_vertbuff);
-	GraphicsEngine::get()->getImmediateDeviceContext()->drawTriangleList(m_vertbuff->getSizeVertexList(), 0);
+
+	// Draw the triangle
+	GraphicsEngine::get()->getImmediateDeviceContext()->drawTriangleStrip(m_vertbuff->getSizeVertexList(), 0);
 
 	m_swap_chain->present(true);
 }

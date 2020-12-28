@@ -1,14 +1,23 @@
 #include "AppWindow.h"
+#include <Windows.h>
 
-struct vec3d
+struct vec3
 {
 	float x, y, z;
 };
 
 struct vertex
 {
-	vec3d position;
-	vec3d color;
+	vec3 position;
+	vec3 position1;
+	vec3 color;
+	vec3 color1;
+};
+
+__declspec(align(16))
+struct constant
+{
+	float m_angle;
 };
 
 AppWindow::AppWindow()
@@ -31,10 +40,10 @@ void AppWindow::onCreate()
 	vertex list[]=
 	{
 		// X - Y -Z
-		{-0.5f, -0.5f, 0.0f,	1,0,0 }, // POS1
-		{-0.5f, 0.5f, 0.0f,		0,1,0 }, // POS2
-		{0.5f, -0.5f, 0.0f,		0,0,1 }, // POS3
-		{0.5f, 0.5f, 0.0f,		1,1,0 }
+		{-0.5f,-0.5f,0.0f,    -0.32f,-0.11f,0.0f,   0,0,0,  0,1,0 }, // POS1
+		{-0.5f,0.5f,0.0f,     -0.11f,0.78f,0.0f,    1,1,0,  0,1,1 }, // POS2
+		{ 0.5f,-0.5f,0.0f,     0.75f,-0.73f,0.0f,   0,0,1,  1,0,0 },// POS2
+		{ 0.5f,0.5f,0.0f,      0.88f,0.77f,0.0f,    1,1,1,  0,0,1 }
 	};
 
 	m_vertbuff = GraphicsEngine::get()->createVertexBuffer();
@@ -56,6 +65,14 @@ void AppWindow::onCreate()
 	m_ps = GraphicsEngine::get()->createPixelShader(shader_byte_code, size_shader);
 	GraphicsEngine::get()->releaseCompiledShader();
 
+	// Constant Buffer
+
+	constant cc;
+	cc.m_angle = 0;
+
+	m_cb = GraphicsEngine::get()->createConstantBuffer();
+	m_cb->load(&cc, sizeof(constant));
+
 }
 
 void AppWindow::onUpdate()
@@ -68,6 +85,21 @@ void AppWindow::onUpdate()
 	// Set viewpoint of render target 
 	RECT rc = this->getClientWindowRect();
 	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);
+
+	// Constant Buffer timing
+	unsigned long new_time = 0;
+	if (m_old_time)
+		new_time = ::GetTickCount() - m_old_time;
+	m_delta_time = new_time / 1000.0f;
+	m_old_time = ::GetTickCount();
+	m_angle += 1.57f*m_delta_time;
+	constant cc;
+	cc.m_angle = m_angle;
+
+	m_cb->update(GraphicsEngine::get()->getImmediateDeviceContext(), &cc);
+
+	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_vs, m_cb);
+	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_ps, m_cb);
 
 	//Set default shader in the graphics pipeline
 

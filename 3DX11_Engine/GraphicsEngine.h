@@ -38,7 +38,6 @@ public:
 	
 public:
 	static GraphicsEngine *get();
-
 private:
 	DeviceContext * m_imm_device_context;
 private:
@@ -49,10 +48,8 @@ private:
 	IDXGIAdapter* m_dxgi_adapter;
 	IDXGIFactory* m_dxgi_factory;
 	ID3D11DeviceContext* m_imm_context;
-
 private:
 	ID3DBlob* m_blob = nullptr;
-
 
 	ID3DBlob* m_vsblob = nullptr;
 	ID3DBlob* m_psblob = nullptr;

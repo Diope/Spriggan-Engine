@@ -1,21 +1,25 @@
 #include "Window.h"
 
-//Window* window = nullptr;
-
+//Window* window=nullptr;
 
 Window::Window()
 {
+
 }
+
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
+	//GetWindowLong(hwnd,)
 	switch (msg)
 	{
 	case WM_CREATE:
 	{
-		Window *window = (Window*)((LPCREATESTRUCT)lparam)->lpCreateParams;
-
-		SetWindowLongPtr(hwnd, GWL_USERDATA, (LONG_PTR)window);
+		// Event fired when the window is created
+		// collected here..
+		Window* window = (Window*)((LPCREATESTRUCT)lparam)->lpCreateParams;
+		// .. and then stored for later lookup
+		SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)window);
 		window->setHWND(hwnd);
 		window->onCreate();
 		break;
@@ -23,28 +27,34 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 	case WM_DESTROY:
 	{
-		Window* window = (Window*)GetWindowLong(hwnd, GWL_USERDATA);
+		// Event fired when the window is destroyed
+		Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		window->onDestroy();
 		::PostQuitMessage(0);
 		break;
 	}
+
 
 	default:
 		return ::DefWindowProc(hwnd, msg, wparam, lparam);
 	}
 
 	return NULL;
-
 }
+
+
 bool Window::init()
 {
 
+
+	//Setting up WNDCLASSEX object
 	WNDCLASSEX wc;
 	wc.cbClsExtra = NULL;
 	wc.cbSize = sizeof(WNDCLASSEX);
+	wc.cbWndExtra = NULL;
 	wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
-	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hInstance = NULL;
 	wc.lpszClassName = "MyWindowClass";
@@ -52,26 +62,33 @@ bool Window::init()
 	wc.style = NULL;
 	wc.lpfnWndProc = &WndProc;
 
-	if (!::RegisterClassEx(&wc))
+	if (!::RegisterClassEx(&wc)) // If the registration of class will fail, the function will return false
 		return false;
 
 	/*if (!window)
 		window = this;*/
 
-	// Creation of the window
+		//Creation of the window
 	m_hwnd = ::CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "MyWindowClass", "Spriggan Engine",
-		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768,
+		WS_CAPTION | WS_SYSMENU, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768,
 		NULL, NULL, NULL, this);
 
+	//if the creation fail return false
 	if (!m_hwnd)
 		return false;
 
-	// Bring up window
+	//show up the window
 	::ShowWindow(m_hwnd, SW_SHOW);
 	::UpdateWindow(m_hwnd);
 
-	// Window is initialized and running
+
+
+
+	//set this flag to true to indicate that the window is initialized and running
 	m_is_running = true;
+
+
+
 	return true;
 }
 
@@ -95,8 +112,7 @@ bool Window::broadcast()
 
 bool Window::release()
 {
-
-	// Destroy Window
+	//Destroy the window
 	if (!::DestroyWindow(m_hwnd))
 		return false;
 
@@ -105,7 +121,6 @@ bool Window::release()
 
 bool Window::isRunning()
 {
-
 	return m_is_running;
 }
 
@@ -123,12 +138,10 @@ void Window::setHWND(HWND hwnd)
 
 void Window::onCreate()
 {
-
 }
 
 void Window::onUpdate()
 {
-
 }
 
 void Window::onDestroy()

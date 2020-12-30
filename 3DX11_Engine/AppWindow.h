@@ -8,8 +8,9 @@
 #include "VertexShader.h"
 #include "PixelShader.h"
 #include "IndexBuffer.h"
+#include "InputListener.h"
 
-class AppWindow : public Window
+class AppWindow : public Window, public InputListener
 {
 public:
 	AppWindow();
@@ -22,6 +23,9 @@ public:
 	virtual void onCreate() override;
 	virtual void onUpdate() override;
 	virtual void onDestroy() override;
+
+	virtual void onKeyDown(int key) override;
+	virtual void onKeyUp(int key) override;
 private:
 	SwapChain *m_swap_chain;
 	VertexBuffer *m_vertbuff;
@@ -39,4 +43,8 @@ private:
 	float m_delta_pos;
 	float m_delta_scale;
 	float m_delta_rot;
+
+	float m_rotate_x=0.0f;
+	float m_rotate_y=0.0f;
+
 };

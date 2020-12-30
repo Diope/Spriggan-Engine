@@ -23,6 +23,8 @@ public:
 	virtual void onCreate() override;
 	virtual void onUpdate() override;
 	virtual void onDestroy() override;
+	virtual void onFocus() override;
+	virtual void onKillFocus() override;
 
 	virtual void onKeyDown(int key) override;
 	virtual void onKeyUp(int key) override;

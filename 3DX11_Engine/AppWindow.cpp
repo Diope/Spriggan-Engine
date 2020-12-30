@@ -222,6 +222,16 @@ void AppWindow::onDestroy()
 	GraphicsEngine::get()->release();
 }
 
+void AppWindow::onFocus()
+{
+	InputSystem::get()->addListener(this);
+}
+
+void AppWindow::onKillFocus()
+{
+	InputSystem::get()->removeListener(this);
+}
+
 void AppWindow::onKeyDown(int key)
 {
 	if (key == 'W') { m_rotate_x += 3.14f*m_delta_time; }

@@ -30,6 +30,13 @@ public:
 	virtual void onKeyUp(int key) override;
 	virtual void onMouseMove(const Point &delta_mouse_pos) override;
 
+	virtual void onLeftMouseDown(const Point &mouse_pos) override;
+	virtual void onLeftMouseUp(const Point &mouse_pos) override;
+
+	virtual void onRightMouseDown(const Point &mouse_pos) override;
+	virtual void onRightMouseUp(const Point &mouse_pos) override;
+
+
 private:
 	SwapChain *m_swap_chain;
 	VertexBuffer *m_vertbuff;
@@ -50,5 +57,7 @@ private:
 
 	float m_rotate_x=0.0f;
 	float m_rotate_y=0.0f;
+
+	float m_scale_cube = 1;
 
 };

@@ -26,6 +26,8 @@ public:
 
 	virtual void onKeyDown(int key) override;
 	virtual void onKeyUp(int key) override;
+	virtual void onMouseMove(const Point &delta_mouse_pos) override;
+
 private:
 	SwapChain *m_swap_chain;
 	VertexBuffer *m_vertbuff;

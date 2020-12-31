@@ -20,7 +20,7 @@ public:
 	virtual void onKeyUp(int key) = 0;
 
 	// MOUSE CURSOR
-	virtual void onMouseMove(const Point &delta_mouse_pos) = 0;
+	virtual void onMouseMove(const Point &mouse_pos) = 0;
 
 	// MOUSE BUTTONS
 	virtual void onLeftMouseDown(const Point &mouse_pos) = 0;

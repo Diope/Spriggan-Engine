@@ -123,11 +123,10 @@ void AppWindow::onCreate()
 	InputSystem::get()->addListener(this);
 	InputSystem::get()->showCursor(false);
 
-	GraphicsEngine::get()->init();
-	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain();
-
 	RECT rc = this->getClientWindowRect();
-	m_swap_chain->init(this->m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
+	GraphicsEngine::get()->init();
+	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
+
 
 	m_world_cam.setTranslation(Vector3D(0, 0, -2));
 
@@ -147,7 +146,7 @@ void AppWindow::onCreate()
 		{ Vector3D(-0.5f,-0.5f,0.5f),     Vector3D(0,1,0), Vector3D(0,0.2f,0) }
 	};
 
-	m_vertbuff = GraphicsEngine::get()->getRenderSystem()->createVertexBuffer();
+	
 	UINT size_list = ARRAYSIZE(vertex_list);
 
 	// Index List
@@ -176,17 +175,15 @@ void AppWindow::onCreate()
 
 
 	// Index Buffer
-	m_ib = GraphicsEngine::get()->getRenderSystem()->createIndexBuffer();
 	UINT size_index_list = ARRAYSIZE(index_list);
-
-	m_ib->load(index_list, size_index_list);
-
+	m_ib = GraphicsEngine::get()->getRenderSystem()->createIndexBuffer(index_list, size_index_list);
+	
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
-	GraphicsEngine::get()->getRenderSystem()->compileVertexShader(L"VertexShader.hlsl", "vsmain", &shader_byte_code, &size_shader);
 
+	GraphicsEngine::get()->getRenderSystem()->compileVertexShader(L"VertexShader.hlsl", "vsmain", &shader_byte_code, &size_shader);
 	m_vs = GraphicsEngine::get()->getRenderSystem()->createVertexShader(shader_byte_code, size_shader);
-	m_vertbuff->load(vertex_list, sizeof(vertex), size_list, shader_byte_code, size_shader);
+	m_vertbuff = GraphicsEngine::get()->getRenderSystem()->createVertexBuffer(vertex_list, sizeof(vertex), size_list, shader_byte_code, size_shader);
 
 	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
 
@@ -198,8 +195,7 @@ void AppWindow::onCreate()
 	constant cc;
 	cc.m_time = 0;
 
-	m_cb = GraphicsEngine::get()->getRenderSystem()->createConstantBuffer();
-	m_cb->load(&cc, sizeof(constant));
+	m_cb = GraphicsEngine::get()->getRenderSystem()->createConstantBuffer(&cc, sizeof(constant));
 
 }
 
@@ -246,12 +242,12 @@ void AppWindow::onUpdate()
 void AppWindow::onDestroy()
 {
 	Window::onDestroy();
-	m_vertbuff->release();
-	m_ib->release();
-	m_swap_chain->release();
-	m_vs->release();
-	m_ps->release();
-	m_cb->release();
+	//m_vertbuff->release();
+	//m_ib->release();
+	//m_swap_chain->release();
+	//m_vs->release();
+	//m_ps->release();
+	//m_cb->release();
 	
 	GraphicsEngine::get()->release();
 }

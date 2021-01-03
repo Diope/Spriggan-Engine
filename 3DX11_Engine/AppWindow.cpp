@@ -124,7 +124,7 @@ void AppWindow::onCreate()
 	InputSystem::get()->showCursor(false);
 
 	RECT rc = this->getClientWindowRect();
-	GraphicsEngine::get()->init();
+
 	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
 
 
@@ -249,7 +249,7 @@ void AppWindow::onDestroy()
 	//m_ps->release();
 	//m_cb->release();
 	
-	GraphicsEngine::get()->release();
+
 }
 
 void AppWindow::onFocus()

@@ -1,8 +1,10 @@
 #include "InputSystem.h"
 #include "Point.h"
 #include <Windows.h>
+#include <exception>
 
 
+InputSystem *InputSystem::m_system = nullptr;
 
 InputSystem::InputSystem()
 {
@@ -11,6 +13,7 @@ InputSystem::InputSystem()
 
 InputSystem::~InputSystem()
 {
+	InputSystem::m_system = nullptr;
 }
 
 void InputSystem::update()
@@ -104,8 +107,19 @@ void InputSystem::showCursor(bool show)
 	::ShowCursor(show);
 }
 
+void InputSystem::create()
+{
+	if (InputSystem::m_system) throw std::exception("Input system already initialized");
+	InputSystem::m_system = new InputSystem();
+}
+
+void InputSystem::release()
+{
+	if (!InputSystem::m_system) return;
+	delete InputSystem::m_system;
+}
+
 InputSystem * InputSystem::get()
 {
-	static InputSystem system;
-	return &system;
+	return m_system;
 }

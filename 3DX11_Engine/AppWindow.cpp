@@ -1,20 +1,20 @@
 #include "AppWindow.h"
 #include <Windows.h>
 #include "Vector3D.h"
+#include "Vector2D.h"
 #include "Matrix4x4.h"
 #include "InputSystem.h"
 
 
-struct vec3
-{
-	float x, y, z;
-};
+//struct vec3
+//{
+//	float x, y, z;
+//};
 
 struct vertex
 {
 	Vector3D position;
-	Vector3D color;
-	Vector3D color1;
+	Vector2D texcoord;
 };
 
 
@@ -123,6 +123,12 @@ void AppWindow::onCreate()
 	InputSystem::get()->addListener(this);
 	InputSystem::get()->showCursor(false);
 
+	m_wood_texture = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\wood.jpg");
+
+
+
+
+
 	RECT rc = this->getClientWindowRect();
 
 	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
@@ -130,21 +136,66 @@ void AppWindow::onCreate()
 
 	m_world_cam.setTranslation(Vector3D(0, 0, -2));
 
+	Vector3D position_list[] =
+	{
+		// Front
+		{ Vector3D(-0.5f,-0.5f,-0.5f)},
+		{ Vector3D(-0.5f,0.5f,-0.5f)},
+		{ Vector3D(0.5f,0.5f,-0.5f)},
+		{ Vector3D(0.5f,-0.5f,-0.5f)},
+
+		// Back
+		{ Vector3D(0.5f,-0.5f,0.5f)},
+		{ Vector3D(0.5f,0.5f,0.5f)},
+		{ Vector3D(-0.5f,0.5f,0.5f)},
+		{ Vector3D(-0.5f,-0.5f,0.5f)}
+	};
+
+	Vector2D texcoord_list[] =
+	{
+		// Front
+		{ Vector2D(0.0f, 0.0f)},
+		{ Vector2D(0.0f, 1.0f)},
+		{ Vector2D(1.0f, 0.0f)},
+		{ Vector2D(1.0f, 1.0f)},
+	};
+
+
 	vertex vertex_list[] =
 	{
 		// X - Y - Z
 		// Front
-		{Vector3D(-0.5f,-0.5f,-0.5f),    Vector3D(1,0,0),  Vector3D(0.2f,0,0) },
-		{Vector3D(-0.5f,0.5f,-0.5f),    Vector3D(1,1,0), Vector3D(0.2f,0.2f,0) },
-		{ Vector3D(0.5f,0.5f,-0.5f),   Vector3D(1,1,0),  Vector3D(0.2f,0.2f,0) },
-		{ Vector3D(0.5f,-0.5f,-0.5f),     Vector3D(1,0,0), Vector3D(0.2f,0,0) },
+		{ position_list[0], texcoord_list[1] },
+		{ position_list[1], texcoord_list[0] },
+		{ position_list[2], texcoord_list[2] },
+		{ position_list[3], texcoord_list[3] },
 
-		// Back
-		{ Vector3D(0.5f,-0.5f,0.5f),    Vector3D(0,1,0), Vector3D(0,0.2f,0) },
-		{ Vector3D(0.5f,0.5f,0.5f),    Vector3D(0,1,1), Vector3D(0,0.2f,0.2f) },
-		{ Vector3D(-0.5f,0.5f,0.5f),   Vector3D(0,1,1),  Vector3D(0,0.2f,0.2f) },
-		{ Vector3D(-0.5f,-0.5f,0.5f),     Vector3D(0,1,0), Vector3D(0,0.2f,0) }
+		{ position_list[4], texcoord_list[1] },
+		{ position_list[5], texcoord_list[0] },
+		{ position_list[6], texcoord_list[2] },
+		{ position_list[7], texcoord_list[3] },
+
+		{ position_list[1], texcoord_list[1] },
+		{ position_list[6], texcoord_list[0] },
+		{ position_list[5], texcoord_list[2] },
+		{ position_list[2], texcoord_list[3] },
+
+		{ position_list[7], texcoord_list[1] },
+		{ position_list[0], texcoord_list[0] },
+		{ position_list[3], texcoord_list[2] },
+		{ position_list[4], texcoord_list[3] },
+
+		{ position_list[3], texcoord_list[1] },
+		{ position_list[2], texcoord_list[0] },
+		{ position_list[5], texcoord_list[2] },
+		{ position_list[4], texcoord_list[3] },
+
+		{ position_list[7], texcoord_list[1] },
+		{ position_list[6], texcoord_list[0] },
+		{ position_list[1], texcoord_list[2] },
+		{ position_list[0], texcoord_list[3] },
 	};
+
 
 	
 	UINT size_list = ARRAYSIZE(vertex_list);
@@ -159,17 +210,17 @@ void AppWindow::onCreate()
 		4,5,6,
 		6,7,4,
 		// Top
-		1,6,5,
-		5,2,1,
+		8,9,10,
+		10,11,8,
 		// Bottom
-		7,0,3,
-		3,4,7,
+		12,13,14,
+		14,15,12,
 		// Right
-		3,2,5,
-		5,4,3,
+		16,17,18,
+		18,19,16,
 		// Left
-		7,6,1,
-		1,0,7
+		20,21,22,
+		22,23,20
 
 	};
 
@@ -221,6 +272,8 @@ void AppWindow::onUpdate()
 	// Set the default shader
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexShader(m_vs);
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setPixelShader(m_ps);
+
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setTexture(m_ps, m_wood_texture);
 
 
 	// Set the vertices of the triangle

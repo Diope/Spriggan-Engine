@@ -45,6 +45,7 @@ private:
 	PixelShaderPtr m_ps;
 	ConstantBufferPtr m_cb;
 	IndexBufferPtr m_ib;
+	TexturePtr m_wood_texture;
 
 private:
 

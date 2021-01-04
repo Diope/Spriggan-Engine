@@ -9,20 +9,20 @@ int main()
 		GraphicsEngine::create();
 		InputSystem::create();
 	}
-	catch (...)
-	{
-		return -1;
-	}
+	catch (...){return -1;}
 	
 	{
-		AppWindow app;
-		if (app.init())
+		try
 		{
-			while (app.isRunning())
-			{
-				app.broadcast();
-			}
+			AppWindow app;
+			while (app.isRunning());
+		}catch(...) 
+		{
+			InputSystem::release();
+			GraphicsEngine::release();
+			return -1;
 		}
+	
 	}
 	InputSystem::release();
 	GraphicsEngine::release();

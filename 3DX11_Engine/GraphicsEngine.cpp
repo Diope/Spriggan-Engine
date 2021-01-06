@@ -61,7 +61,7 @@ GraphicsEngine::~GraphicsEngine()
 
 void GraphicsEngine::create()
 {
-	if (GraphicsEngine::m_engine) throw std::exception("Graphisc Engine already created");
+	if (GraphicsEngine::m_engine) throw std::exception("Graphics Engine already created");
 	GraphicsEngine::m_engine = new GraphicsEngine();
 }
 

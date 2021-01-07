@@ -61,6 +61,8 @@ private:
 	float m_rotate_x=0.0f;
 	float m_rotate_y=0.0f;
 
+	float m_light_rotate_y = 0.0f;
+
 	float m_scale_cube = 1;
 
 	float m_forward = 0.0f;

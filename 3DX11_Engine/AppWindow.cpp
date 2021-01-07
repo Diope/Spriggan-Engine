@@ -25,7 +25,7 @@ struct constant
 	Matrix4x4 m_view;
 	Matrix4x4 m_proj;
 	Vector4D m_light_direction;
-
+	Vector4D m_camera_position;
 };
 
 
@@ -48,7 +48,9 @@ void AppWindow::update()
 
 	Matrix4x4 m_light_rotation_matrix;
 	m_light_rotation_matrix.setIdentity();
-	m_light_rotation_matrix.setRotateY(0.0f);
+	m_light_rotation_matrix.setRotateY(m_light_rotate_y);
+
+	m_light_rotate_y += 0.785f * m_delta_time;
 
 	cc.m_light_direction = m_light_rotation_matrix.getZDirection();
 
@@ -94,6 +96,7 @@ void AppWindow::update()
 	new_pos = new_pos + world_cam.geXDirection()*(m_rightward*0.01f);
 
 	world_cam.setTranslation(new_pos);
+	cc.m_camera_position = new_pos;
 
 	m_world_cam = world_cam;
 

@@ -6,6 +6,7 @@ struct PS_INPUT
 	float4 position: SV_POSITION;
 	float2 texcoord: TEXCOORD0;
 	float3 normal: NORMAL0;
+	float3 direction_to_camera: TEXCOORD1;
 };
 
 cbuffer constant: register(b0)
@@ -25,7 +26,7 @@ float4 psmain(PS_INPUT input) : SV_TARGET
 
 	float3 ambient_light = ka * ia;
 
-	//DIFFUSE LIGHT
+	// Diffuse Light
 	float kd = 0.7;
 	float3 id = float3(1.0, 1.0, 1.0);
 	float amount_diffuse_light = max(0.0, dot(m_light_direction.xyz, input.normal));
@@ -34,7 +35,16 @@ float4 psmain(PS_INPUT input) : SV_TARGET
 
 	float3 diffuse_light = kd * id * diffuse_light_amount;
 
+	// Specular Light
+	float ks = 1.0;
+	float3 is = float3(1.0, 1.0, 1.0);
+	float3 reflected_light = reflect(m_light_direction.xyz, input.normal);
+	float shininess = 40.0;
+	float specular_light_amount = pow(max(0.0, dot(reflected_light, input.direction_to_camera)), shininess );
+
+	float3 specular_light = ks * specular_light_amount * is;
+
 	// Final Light
-	float3 diffuse_ambient_light = ambient_light + diffuse_light;
-	return float4(diffuse_ambient_light, 1.0);
+	float3 final_light = ambient_light + diffuse_light + specular_light;
+	return float4(final_light, 1.0);
 }

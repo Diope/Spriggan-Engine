@@ -8,10 +8,10 @@ public:
 	VertexMesh() :m_position(), m_texcoord(), m_normal()
 	{
 	}
-	VertexMesh(Vector3D m_position, Vector2D m_texcoord, Vector3D m_normal) : 
-		m_position(m_position), 
-		m_texcoord(m_texcoord), 
-		m_normal(m_normal)
+	VertexMesh(Vector3D position, Vector2D texcoord, Vector3D normal) : 
+		m_position(position), 
+		m_texcoord(texcoord), 
+		m_normal(normal)
 	{
 	}
 	VertexMesh(const VertexMesh& vertex) : 
@@ -27,7 +27,6 @@ public:
 
 public:
 	Vector3D m_position;
-	Vector3D m_normal;
 	Vector2D m_texcoord;
-
+	Vector3D m_normal;
 };

@@ -91,9 +91,9 @@ void AppWindow::update()
 	temp.setRotateY(m_rotate_y);
 	world_cam *= temp;
 
-	Vector3D new_pos = m_world_cam.getTranslation() + world_cam.getZDirection()*(m_forward*0.3f);
+	Vector3D new_pos = m_world_cam.getTranslation() + world_cam.getZDirection()*(m_forward*0.01f);
 
-	new_pos = new_pos + world_cam.geXDirection()*(m_rightward*0.3f);
+	new_pos = new_pos + world_cam.geXDirection()*(m_rightward*0.01f);
 
 	world_cam.setTranslation(new_pos);
 	cc.m_camera_position = new_pos;
@@ -104,13 +104,13 @@ void AppWindow::update()
 
 
 	cc.m_view = world_cam;
-	cc.m_proj.setorthogonalH
+	/*cc.m_proj.setorthogonalH
 	(
 		(this->getClientWindowRect().right - this->getClientWindowRect().left) / 300.0f,
 		(this->getClientWindowRect().bottom - this->getClientWindowRect().top) / 300.0f,
 		-4.0f,
 		4.0f
-	);
+	);*/
 
 	int width = (this->getClientWindowRect().right - this->getClientWindowRect().left);
 	int height = (this->getClientWindowRect().bottom - this->getClientWindowRect().top);

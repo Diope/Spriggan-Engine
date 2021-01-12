@@ -213,4 +213,7 @@
   <ItemGroup>
     <ResourceCompile Include="3DX11_Engine.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="README.md" />
+  </ItemGroup>
 </Project>

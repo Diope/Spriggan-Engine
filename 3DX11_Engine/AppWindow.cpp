@@ -24,8 +24,8 @@ struct constant
 	Matrix4x4 m_world;
 	Matrix4x4 m_view;
 	Matrix4x4 m_proj;
-	unsigned int m_time;
-
+	Vector4D m_light_direction;
+	Vector4D m_camera_position;
 };
 
 
@@ -37,7 +37,7 @@ void AppWindow::update()
 {
 
 	constant cc;
-	cc.m_time = ::GetTickCount64();
+	/*cc.m_time = ::GetTickCount64();*/
 
 	m_delta_pos += m_delta_time / 10.0f;
 	if (m_delta_pos > 1.0f)
@@ -45,6 +45,14 @@ void AppWindow::update()
 
 
 	Matrix4x4 temp;
+
+	Matrix4x4 m_light_rotation_matrix;
+	m_light_rotation_matrix.setIdentity();
+	m_light_rotation_matrix.setRotateY(m_light_rotate_y);
+
+	m_light_rotate_y += 0.785f * m_delta_time;
+
+	cc.m_light_direction = m_light_rotation_matrix.getZDirection();
 
 	m_delta_scale += m_delta_time / 0.55f;
 
@@ -83,11 +91,12 @@ void AppWindow::update()
 	temp.setRotateY(m_rotate_y);
 	world_cam *= temp;
 
-	Vector3D new_pos = m_world_cam.getTranslation() + world_cam.getZDirection()*(m_forward*0.02f);
+	Vector3D new_pos = m_world_cam.getTranslation() + world_cam.getZDirection()*(m_forward*0.3f);
 
-	new_pos = new_pos + world_cam.geXDirection()*(m_rightward*0.02f);
+	new_pos = new_pos + world_cam.geXDirection()*(m_rightward*0.3f);
 
 	world_cam.setTranslation(new_pos);
+	cc.m_camera_position = new_pos;
 
 	m_world_cam = world_cam;
 
@@ -95,13 +104,13 @@ void AppWindow::update()
 
 
 	cc.m_view = world_cam;
-	//cc.m_proj.setorthogonalH
-	//(
-	//	(this->getClientWindowRect().right - this->getClientWindowRect().left) / 300.0f,
-	//	(this->getClientWindowRect().bottom - this->getClientWindowRect().top) / 300.0f,
-	//	-4.0f,
-	//	4.0f
-	//);
+	cc.m_proj.setorthogonalH
+	(
+		(this->getClientWindowRect().right - this->getClientWindowRect().left) / 300.0f,
+		(this->getClientWindowRect().bottom - this->getClientWindowRect().top) / 300.0f,
+		-4.0f,
+		4.0f
+	);
 
 	int width = (this->getClientWindowRect().right - this->getClientWindowRect().left);
 	int height = (this->getClientWindowRect().bottom - this->getClientWindowRect().top);
@@ -126,125 +135,119 @@ void AppWindow::onCreate()
 	m_wood_texture = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\brick.png");
 	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\statue.obj");
 
-
-
-
 	RECT rc = this->getClientWindowRect();
-
 	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
 
 
-	m_world_cam.setTranslation(Vector3D(0, 0, -2));
+	m_world_cam.setTranslation(Vector3D(0, 0, -1));
 
-	Vector3D position_list[] =
-	{
-		// Front
-		{ Vector3D(-0.5f,-0.5f,-0.5f)},
-		{ Vector3D(-0.5f,0.5f,-0.5f)},
-		{ Vector3D(0.5f,0.5f,-0.5f)},
-		{ Vector3D(0.5f,-0.5f,-0.5f)},
+	//Vector3D position_list[] =
+	//{
+	//	// Front
+	//	{ Vector3D(-0.5f,-0.5f,-0.5f)},
+	//	{ Vector3D(-0.5f,0.5f,-0.5f)},
+	//	{ Vector3D(0.5f,0.5f,-0.5f)},
+	//	{ Vector3D(0.5f,-0.5f,-0.5f)},
 
-		// Back
-		{ Vector3D(0.5f,-0.5f,0.5f)},
-		{ Vector3D(0.5f,0.5f,0.5f)},
-		{ Vector3D(-0.5f,0.5f,0.5f)},
-		{ Vector3D(-0.5f,-0.5f,0.5f)}
-	};
+	//	// Back
+	//	{ Vector3D(0.5f,-0.5f,0.5f)},
+	//	{ Vector3D(0.5f,0.5f,0.5f)},
+	//	{ Vector3D(-0.5f,0.5f,0.5f)},
+	//	{ Vector3D(-0.5f,-0.5f,0.5f)}
+	//};
 
-	Vector2D texcoord_list[] =
-	{
-		// Front
-		{ Vector2D(0.0f, 0.0f)},
-		{ Vector2D(0.0f, 1.0f)},
-		{ Vector2D(1.0f, 0.0f)},
-		{ Vector2D(1.0f, 1.0f)},
-	};
-
-
-	vertex vertex_list[] =
-	{
-		// X - Y - Z
-		// Front
-		{ position_list[0], texcoord_list[1] },
-		{ position_list[1], texcoord_list[0] },
-		{ position_list[2], texcoord_list[2] },
-		{ position_list[3], texcoord_list[3] },
-
-		{ position_list[4], texcoord_list[1] },
-		{ position_list[5], texcoord_list[0] },
-		{ position_list[6], texcoord_list[2] },
-		{ position_list[7], texcoord_list[3] },
-
-		{ position_list[1], texcoord_list[1] },
-		{ position_list[6], texcoord_list[0] },
-		{ position_list[5], texcoord_list[2] },
-		{ position_list[2], texcoord_list[3] },
-
-		{ position_list[7], texcoord_list[1] },
-		{ position_list[0], texcoord_list[0] },
-		{ position_list[3], texcoord_list[2] },
-		{ position_list[4], texcoord_list[3] },
-
-		{ position_list[3], texcoord_list[1] },
-		{ position_list[2], texcoord_list[0] },
-		{ position_list[5], texcoord_list[2] },
-		{ position_list[4], texcoord_list[3] },
-
-		{ position_list[7], texcoord_list[1] },
-		{ position_list[6], texcoord_list[0] },
-		{ position_list[1], texcoord_list[2] },
-		{ position_list[0], texcoord_list[3] },
-	};
+	//Vector2D texcoord_list[] =
+	//{
+	//	// Front
+	//	{ Vector2D(0.0f, 0.0f)},
+	//	{ Vector2D(0.0f, 1.0f)},
+	//	{ Vector2D(1.0f, 0.0f)},
+	//	{ Vector2D(1.0f, 1.0f)},
+	//};
 
 
-	
-	UINT size_list = ARRAYSIZE(vertex_list);
+	//vertex vertex_list[] =
+	//{
+	//	// X - Y - Z
+	//	// Front
+	//	{ position_list[0], texcoord_list[1] },
+	//	{ position_list[1], texcoord_list[0] },
+	//	{ position_list[2], texcoord_list[2] },
+	//	{ position_list[3], texcoord_list[3] },
 
-	// Index List
-	unsigned int index_list[]=
-	{
-		// Front
-		0,1,2, 
-		2,3,0,
-		// Back
-		4,5,6,
-		6,7,4,
-		// Top
-		8,9,10,
-		10,11,8,
-		// Bottom
-		12,13,14,
-		14,15,12,
-		// Right
-		16,17,18,
-		18,19,16,
-		// Left
-		20,21,22,
-		22,23,20
+	//	{ position_list[4], texcoord_list[1] },
+	//	{ position_list[5], texcoord_list[0] },
+	//	{ position_list[6], texcoord_list[2] },
+	//	{ position_list[7], texcoord_list[3] },
 
-	};
+	//	{ position_list[1], texcoord_list[1] },
+	//	{ position_list[6], texcoord_list[0] },
+	//	{ position_list[5], texcoord_list[2] },
+	//	{ position_list[2], texcoord_list[3] },
+
+	//	{ position_list[7], texcoord_list[1] },
+	//	{ position_list[0], texcoord_list[0] },
+	//	{ position_list[3], texcoord_list[2] },
+	//	{ position_list[4], texcoord_list[3] },
+
+	//	{ position_list[3], texcoord_list[1] },
+	//	{ position_list[2], texcoord_list[0] },
+	//	{ position_list[5], texcoord_list[2] },
+	//	{ position_list[4], texcoord_list[3] },
+
+	//	{ position_list[7], texcoord_list[1] },
+	//	{ position_list[6], texcoord_list[0] },
+	//	{ position_list[1], texcoord_list[2] },
+	//	{ position_list[0], texcoord_list[3] },
+	//};
 
 
-	// Index Buffer
-	UINT size_index_list = ARRAYSIZE(index_list);
-	m_ib = GraphicsEngine::get()->getRenderSystem()->createIndexBuffer(index_list, size_index_list);
+	//
+	//UINT size_list = ARRAYSIZE(vertex_list);
+
+	//// Index List
+	//unsigned int index_list[]=
+	//{
+	//	// Front
+	//	0,1,2, 
+	//	2,3,0,
+	//	// Back
+	//	4,5,6,
+	//	6,7,4,
+	//	// Top
+	//	8,9,10,
+	//	10,11,8,
+	//	// Bottom
+	//	12,13,14,
+	//	14,15,12,
+	//	// Right
+	//	16,17,18,
+	//	18,19,16,
+	//	// Left
+	//	20,21,22,
+	//	22,23,20
+
+	//};
+
+
+	//// Index Buffer
+	//UINT size_index_list = ARRAYSIZE(index_list);
+	//m_ib = GraphicsEngine::get()->getRenderSystem()->createIndexBuffer(index_list, size_index_list);
 	
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
 
 	GraphicsEngine::get()->getRenderSystem()->compileVertexShader(L"VertexShader.hlsl", "vsmain", &shader_byte_code, &size_shader);
 	m_vs = GraphicsEngine::get()->getRenderSystem()->createVertexShader(shader_byte_code, size_shader);
-	m_vertbuff = GraphicsEngine::get()->getRenderSystem()->createVertexBuffer(vertex_list, sizeof(vertex), size_list, shader_byte_code, size_shader);
-
+	/*m_vertbuff = GraphicsEngine::get()->getRenderSystem()->createVertexBuffer(vertex_list, sizeof(vertex), size_list, shader_byte_code, size_shader);*/
 	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
-
 
 	GraphicsEngine::get()->getRenderSystem()->compilePixelShader(L"PixelShader.hlsl", "psmain", &shader_byte_code, &size_shader);
 	m_ps = GraphicsEngine::get()->getRenderSystem()->createPixelShader(shader_byte_code, size_shader);
 	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
 
 	constant cc;
-	cc.m_time = 0;
+	//cc.m_time = 0;
 
 	m_cb = GraphicsEngine::get()->getRenderSystem()->createConstantBuffer(&cc, sizeof(constant));
 
